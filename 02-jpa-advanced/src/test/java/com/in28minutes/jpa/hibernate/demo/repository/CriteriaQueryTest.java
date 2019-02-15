@@ -30,9 +30,67 @@ public class CriteriaQueryTest {
 
 	@Autowired
 	EntityManager em;
-
-	@Test
+	
+//	@Test
 	public void all_courses() {
+		// "Select c From Course c"
+
+		// 1. Use Criteria Builder to create a Criteria Query returning the
+		// expected result object
+	
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Course> cq = cb.createQuery(Course.class);
+		// 2. Define roots for tables which are involved in the query
+		
+		Root<Course> courseRoot = cq.from(Course.class);
+
+
+		// 3. Define Predicates etc using Criteria Builder
+
+		// 4. Add Predicates etc to the Criteria Query
+
+		// 5. Build the TypedQuery using the entity manager and criteria query
+		
+		TypedQuery<Course> createQuery = em.createQuery(cq);
+		List<Course> resultList = createQuery.getResultList();
+		logger.info("Typed Query -> {}", resultList);
+		// [Course[JPA in 50 Steps], Course[Spring in 50 Steps], Course[Spring
+		// Boot in 100 Steps]]
+	}
+	
+	@Test
+	public void all_courses_like() {
+		// "Select c From Course c where name like '%100 Steps' "
+
+		// 1. Use Criteria Builder to create a Criteria Query returning the
+		// expected result object
+	
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Course> cq = cb.createQuery(Course.class);
+		// 2. Define roots for tables which are involved in the query
+		
+		Root<Course> courseRoot = cq.from(Course.class);
+
+
+		// 3. Define Predicates etc using Criteria Builder
+		
+		Predicate like = cb.like(courseRoot.get("name"), "%100 Steps");
+		
+
+		// 4. Add Predicates etc to the Criteria Query
+		cq.where(like);
+
+		// 5. Build the TypedQuery using the entity manager and criteria query
+		
+		TypedQuery<Course> createQuery = em.createQuery(cq);
+		List<Course> resultList = createQuery.getResultList();
+		logger.info("Typed Query -> {}", resultList);
+		// [Course[JPA in 50 Steps], Course[Spring in 50 Steps], Course[Spring
+		// Boot in 100 Steps]]
+	}
+
+	//@Test
+	public void all_courses1() {
 		// "Select c From Course c"
 
 		// 1. Use Criteria Builder to create a Criteria Query returning the
@@ -57,7 +115,7 @@ public class CriteriaQueryTest {
 		// Boot in 100 Steps]]
 	}
 
-	@Test
+	//@Test
 	public void all_courses_having_100Steps() {
 		// "Select c From Course c where name like '%100 Steps' "
 
@@ -84,7 +142,7 @@ public class CriteriaQueryTest {
 		// [Course[Spring Boot in 100 Steps]]
 	}
 
-	@Test
+	//@Test
 	public void all_courses_without_students() {
 		// "Select c From Course c where c.students is empty"
 
@@ -111,7 +169,7 @@ public class CriteriaQueryTest {
 		// [Course[Spring in 50 Steps]]
 	}
 
-	@Test
+//	@Test
 	public void join() {
 		// "Select c From Course c join c.students s"
 
@@ -138,7 +196,7 @@ public class CriteriaQueryTest {
 		// Steps], Course[Spring Boot in 100 Steps]]
 	}
 
-	@Test
+//	@Test
 	public void left_join() {
 		// "Select c From Course c left join c.students s"
 
